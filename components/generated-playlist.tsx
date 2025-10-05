@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { ChevronDown, ChevronUp, ExternalLink, Music, Play } from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, Music, Play, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { SiSpotify } from "react-icons/si";
@@ -24,9 +24,10 @@ interface GeneratedPlaylistProps {
 			genres: string[];
 		};
 	};
+	onRestart?: () => void;
 }
 
-export default function GeneratedPlaylist({ playlist }: GeneratedPlaylistProps) {
+export default function GeneratedPlaylist({ playlist, onRestart }: GeneratedPlaylistProps) {
 	const [showAllTracks, setShowAllTracks] = useState(false);
 	const { toast } = useToast();
 
@@ -85,10 +86,18 @@ export default function GeneratedPlaylist({ playlist }: GeneratedPlaylistProps) 
 				className="flex min-w-full h-fit overflow-y-scroll items-center justify-between gap-4 mt-28 mb-12
             ">
 				<h3 className="text-xl font-bold">Generated Playlist Preview</h3>
-				<Button variant="default" onClick={() => saveToSpotifyMutation.mutate()} disabled={saveToSpotifyMutation.isPending} className="flex items-center gap-2" data-testid="button-save-spotify">
-					<SiSpotify className="w-4 h-4" />
-					{saveToSpotifyMutation.isPending ? "Saving..." : "Save to Spotify"}
-				</Button>
+				<div className="flex items-center gap-3">
+					{onRestart && (
+						<Button variant="outline" onClick={onRestart} className="flex items-center gap-2" data-testid="button-start-over">
+							<RotateCcw className="w-4 h-4" />
+							Start Over
+						</Button>
+					)}
+					<Button variant="default" onClick={() => saveToSpotifyMutation.mutate()} disabled={saveToSpotifyMutation.isPending} className="flex items-center gap-2" data-testid="button-save-spotify">
+						<SiSpotify className="w-4 h-4" />
+						{saveToSpotifyMutation.isPending ? "Saving..." : "Save to Spotify"}
+					</Button>
+				</div>
 			</div>
 
 			<Card className="border border-border overflow-hidden">

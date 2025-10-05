@@ -178,6 +178,11 @@ export default function Home() {
 		}
 	};
 
+	const handleRestart = () => {
+		setGeneratedPlaylist(null);
+		setSelectedPlaylists([]);
+	};
+
 	// Handle unauthenticated state
 	if (status === "loading") {
 		return (
@@ -237,7 +242,7 @@ export default function Home() {
 						{!isGeneratingPlaylist && generatedPlaylist &&
 							<div className="flex flex-col overflow-y-scroll h-full pt-18 max-w-full w-screen px-8" >
 
-								<GeneratedPlaylist playlist={generatedPlaylist} />
+								<GeneratedPlaylist playlist={generatedPlaylist} onRestart={handleRestart} />
 							</div>
 						}
 						<div className="flex flex-col h-screen   overflow-hidden pt-28 max-w-full w-screen px-8" >

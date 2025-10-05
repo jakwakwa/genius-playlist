@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 			});
 		}
 
-		// Fetch tracks from selected playlists -- provide full track data for OpenAI
+		// Fetch tracks from selected playlists
 		const sourcePlaylists = [];
 		for (const playlistId of selectedPlaylistIds) {
 			const playlist = await prisma.playlist.findFirst({
@@ -30,29 +30,29 @@ export async function POST(req: Request) {
 			});
 
 			if (playlist) {
-				// Fetch full track listing from Spotify API
-				const tracksRes = await spotifyFetch(user.id, `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`);
+				console.log(`Fetching tracks for playlist: ${playlist.name} (${playlistId})`);
+				// Fetch tracks from Spotify API
+				const tracksRes = await spotifyFetch(
+					user.id,
+					`https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`
+				);
 
 				if (tracksRes.ok) {
 					const tracksData = await tracksRes.json();
-					// The tracksData.items is an array of { track, added_at }
-					const formattedTracks = tracksData.items.map((item: { track: any }) => {
-						const track = item?.track;
-						if (!track || track.type !== "track") return null;
-						return {
-							artist: Array.isArray(track.artists) ? track.artists.map((a: any) => a.name).join(", ") : track.artists?.name || "",
-							title: track.name,
-							// Additional fields if you want
-							album: track.album?.name,
-							duration_ms: track.duration_ms,
-							uri: track.uri,
-						};
-					}).filter(Boolean);
+					console.log(`Fetched ${tracksData.items?.length || 0} items from Spotify`);
+					
+					const tracks = tracksData.items
+						.map((item: any) => item.track)
+						.filter((track: any) => track && track.type === "track");
+					
+					console.log(`After filtering, have ${tracks.length} valid tracks`);
+
 					sourcePlaylists.push({
 						name: playlist.name,
-						id: playlist.spotifyId,
-						tracks: formattedTracks,
+						tracks,
 					});
+				} else {
+					console.error(`Failed to fetch tracks for playlist ${playlistId}:`, tracksRes.status);
 				}
 			}
 		}
@@ -66,6 +66,8 @@ export async function POST(req: Request) {
 
 		// Generate playlist using AI
 		const analysis = await analyzePlaylistsAndGenerate(sourcePlaylists, prompt || "Create an energetic playlist perfect for a road trip");
+		
+		console.log("Full AI analysis response:", JSON.stringify(analysis, null, 2));
 
 		// Normalize AI response and build recommendations list safely
 		const recommendedRaw = Array.isArray((analysis as any)?.recommended_tracks)
@@ -74,39 +76,51 @@ export async function POST(req: Request) {
 				? (analysis as any).recommendedTracks
 				: [];
 
-		// If AI returned nothing useful, fall back to top tracks from selected playlists
+		// Search Spotify for AI-recommended tracks (these should be NEW songs, not from user's playlists)
+		console.log("AI recommended", recommendedRaw.length, "tracks:", JSON.stringify(recommendedRaw.slice(0, 5), null, 2));
+		
 		const matchedTracks: any[] = [];
 		if (recommendedRaw.length > 0) {
 			for (const recommendation of recommendedRaw) {
-				const recName = (recommendation?.name ?? "").toString().toLowerCase();
-				const recArtist = (recommendation?.artist ?? "").toString().toLowerCase();
-				for (const sourcePlaylist of sourcePlaylists) {
-					const matchingTrack = sourcePlaylist.tracks.find((track: any) => {
-						const nameOk = track?.name?.toLowerCase?.().includes(recName);
-						const artistOk = Array.isArray(track?.artists) ? track.artists.some((artist: any) => artist?.name?.toLowerCase?.().includes(recArtist)) : false;
-						return Boolean(nameOk || artistOk);
-					});
-
-					if (matchingTrack && !matchedTracks.find((t: any) => t.id === matchingTrack.id)) {
-						matchedTracks.push(matchingTrack);
-						break;
-					}
+				const trackName = recommendation?.name || "";
+				const artistName = recommendation?.artist || "";
+				
+				if (!trackName || !artistName) {
+					console.log("Skipping invalid recommendation:", recommendation);
+					continue;
 				}
+
+				// Search Spotify for this track
+				const searchQuery = encodeURIComponent(`track:${trackName} artist:${artistName}`);
+				console.log(`Searching Spotify for: ${trackName} by ${artistName}`);
+				
+				const searchRes = await spotifyFetch(
+					user.id,
+					`https://api.spotify.com/v1/search?q=${searchQuery}&type=track&limit=1`
+				);
+
+				if (searchRes.ok) {
+					const searchData = await searchRes.json();
+					const track = searchData?.tracks?.items?.[0];
+					
+					if (track) {
+						console.log(`Found: ${track.name} by ${track.artists.map((a: any) => a.name).join(", ")}`);
+						if (!matchedTracks.find((t: any) => t.id === track.id)) {
+							matchedTracks.push(track);
+						}
+					} else {
+						console.log(`No results found for: ${trackName} by ${artistName}`);
+					}
+				} else {
+					console.log(`Search failed for: ${trackName} by ${artistName}`, searchRes.status);
+				}
+				
+				// Limit to avoid too many API calls
+				if (matchedTracks.length >= 30) break;
 			}
 		}
-
-		// Fallback: if still empty, take the first N tracks from the source playlists
-		if (matchedTracks.length === 0) {
-			for (const sourcePlaylist of sourcePlaylists) {
-				for (const item of sourcePlaylist.tracks) {
-					if (!matchedTracks.find((t: any) => t.id === item.id)) {
-						matchedTracks.push(item);
-					}
-					if (matchedTracks.length >= 25) break;
-				}
-				if (matchedTracks.length >= 25) break;
-			}
-		}
+		
+		console.log(`Successfully matched ${matchedTracks.length} tracks from ${recommendedRaw.length} AI recommendations`);
 
 		const playlistName = (analysis as any)?.playlist_name || (analysis as any)?.playlistName || (sourcePlaylists.length > 0 ? `AI Mix · ${sourcePlaylists[0].name}` : "AI Generated Playlist");
 		const playlistDescription = (analysis as any)?.playlist_description || (analysis as any)?.playlistDescription || (prompt ? `Generated by AI • ${prompt}` : "Generated by PlaylistGenius AI");

@@ -28,63 +28,46 @@ export async function analyzePlaylistsAndGenerate(
 	}>,
 	userPrompt: string
 ): Promise<PlaylistAnalysis> {
+	console.log("Source playlists count:", sourcePlaylists.length);
+	console.log("First playlist tracks count:", sourcePlaylists[0]?.tracks?.length || 0);
+	
+	// Simplify track data - only send name, artist, album (no audio features or extra data)
 	const playlistData = sourcePlaylists.map(playlist => ({
 		name: playlist.name,
-		tracks: playlist.tracks.map(track => ({
+		tracks: playlist.tracks.slice(0, 50).map(track => ({ // Limit to 50 tracks max per playlist
 			name: track.name,
 			artist: track.artists.map(a => a.name).join(", "),
 			album: track.album.name,
-			audio_features: track.audio_features,
 		})),
 	}));
 
-	const prompt = `You are a playlist generator.
+	const prompt = `Analyze the playlist below and recommend 25 NEW songs (NOT from the list below).
 
-YOU ALREADY HAVE FULL ACCESS to the selected playlist and track data required. NEVER ask for access, permission, or for the user to paste artists/tracks. NEVER say you need to scan anything. Use ONLY the data below, and generate a reply using it.
+IMPORTANT: Recommend NEW songs based on style/artists. NO songs from the list below.
 
-IMPORTANT: ALL recommended songs in your response MUST be unique and MUST NOT appear in any of the user's selected playlists (see playlist/tracks data below). If you recommend a song already in the selected playlist, it is considered a critical failure.
-- Recommend new songs based on style/genre/artists/adjacent discovery, not repeats.
-- Absolutely NO duplicates with the original, no matter what.
+Playlist: ${playlistData[0]?.name}
+Tracks:
+${playlistData[0]?.tracks.map((t: any) => `${t.artist} - ${t.name}`).join('\n')}
 
-Respond ONLY with valid strict JSON as described below. Do not include ANY markdown, prose, code blocks, explanations, comments, or extra text. Start with { and end with }. Each array and key MUST be present.
+User request: ${userPrompt}
 
-Format:
+Respond ONLY with valid JSON (no markdown):
 {
   "theme": string,
   "mood": string,
-  "energy_level": number, // 1-10
-  "genres": string[],
+  "energy_level": number,
+  "genres": [string],
   "recommended_tracks": [
-    {
-      "name": string,
-      "artist": string,
-      "reason": string,
-      "energy_score": number // 1-10
-    }
+    {"name": string, "artist": string, "reason": string, "energy_score": number}
   ],
   "playlist_name": string,
   "playlist_description": string
-}
-
-REPEAT: Do NOT say you need access, data, or to scan anything. Do NOT output markdown, extra prose, comments, or titles. Reply with valid JSON only. Never include songs already present in the playlist/tracks list below.
-
----
-PLAYLIST/SONG DATA (use this only, no other source):
-${JSON.stringify(playlistData, null, 2)}
-
-USER REQUEST:
-${userPrompt}
-
-- 60% recent similar releases,
-- ~40% adjacent/similar artists for discovery
-- Exclude songs already in my selected playlists
-- scan selected playlists 
-- Scan playlist only 
-            
-${userPrompt}
-`;
+}`;
 
 	try {
+		console.log("Calling OpenAI with prompt length:", prompt.length);
+		console.log("Playlist data has", playlistData.length, "playlists with", playlistData[0]?.tracks?.length, "tracks");
+		
 		const response = await openai().chat.completions.create({
 			model: "gpt-5",
 			messages: [
@@ -98,20 +81,26 @@ ${userPrompt}
 				},
 			],
 			response_format: { type: "json_object" },
-			max_completion_tokens: 4096,
+			max_completion_tokens: 16000,
 		});
+		
+		console.log("OpenAI response received, finish_reason:", response.choices[0]?.finish_reason);
 
 		const rawContent = response.choices[0].message.content || "{}";
+		console.log("Raw OpenAI response:", rawContent.substring(0, 500));
+		
 		try {
 			// Try parsing full response
 			return JSON.parse(rawContent) as PlaylistAnalysis;
-		} catch {
+		} catch (parseError) {
+			console.error("Failed to parse OpenAI response:", parseError);
 			// Fallback: Extract first JSON object in the response (handles rare Markdown output)
 			const match = rawContent.match(/\{([\s\S]*?)\}/);
 			if (match) {
 				try {
 					return JSON.parse(match[0]) as PlaylistAnalysis;
 				} catch (_err2) {
+					console.error("Failed to parse matched JSON:", _err2);
 					throw new Error(`OpenAI returned an invalid JSON block in response: ${rawContent}`);
 				}
 			} else {
@@ -119,6 +108,7 @@ ${userPrompt}
 			}
 		}
 	} catch (error) {
+		console.error("Error in analyzePlaylistsAndGenerate:", error);
 		throw new Error(`Failed to generate playlist analysis: ${error}`);
 	}
 }
@@ -152,7 +142,7 @@ ${context?.selectedPlaylists ? `Selected playlists: ${context.selectedPlaylists.
 					content: m.content,
 				})),
 			],
-			max_completion_tokens: 8048,
+			max_completion_tokens: 16000,
 		});
 
 		return response.choices[0].message.content || "I'm having trouble responding right now. Please try again.";
