@@ -38,10 +38,13 @@ export async function analyzePlaylistsAndGenerate(
 		})),
 	}));
 
-const prompt = `You are a playlist generator. Respond ONLY with valid strict JSON as described below.
-Do not include ANY markdown, prose, code blocks, explanations, comments, or extra text. Start with { and end with }. Each array and key MUST be present.
+const prompt = `You are a playlist generator.
 
-Format your reply as:
+YOU ALREADY HAVE FULL ACCESS to the selected playlist and track data required. NEVER ask for access, permission, or for the user to paste artists/tracks. NEVER say you need to scan anything. Use ONLY the data below, and generate a reply using it.
+
+Respond ONLY with valid strict JSON as described below. Do not include ANY markdown, prose, code blocks, explanations, comments, or extra text. Start with { and end with }. Each array and key MUST be present.
+
+Format:
 {
   "theme": string,
   "mood": string,
@@ -59,13 +62,15 @@ Format your reply as:
   "playlist_description": string
 }
 
-Repeat: DO NOT explain your answer. No prose, markdown, or extra characters—ONLY valid JSON.
+REPEAT: Do NOT say you need access, data, or to scan anything. The data below is everything provided. Do NOT output markdown, extra prose, comments, or titles. Reply with valid JSON only.
 
-User has selected these Spotify playlists:
+---
+PLAYLIST/SONG DATA (use this only, no other source):
 ${JSON.stringify(playlistData, null, 2)}
 
-User Request: 
-use 30 tracks, mixed vibe 
+USER REQUEST:
+${userPrompt}
+
 - 60% recent similar releases,
 - ~40% adjacent/similar artists for discovery
 - Exclude songs already in my selected playlists
