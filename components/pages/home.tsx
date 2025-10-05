@@ -46,13 +46,13 @@ function PWAInstallBanner({ onInstall, onDismiss }: PWAInstallBannerProps) {
 export default function Home() {
 	const { data: session, status } = useSession();
 	const [selectedPlaylists, setSelectedPlaylists] = useState<string[]>([]);
-	const [generatedPlaylist, setGeneratedPlaylist] = useState<any>(null);
+	const [generatedPlaylist, setGeneratedPlaylist] = useState<unknown>(null);
 	const [showInstallBanner, setShowInstallBanner] = useState(false);
-	const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+	const [deferredPrompt, setDeferredPrompt] = useState<unknown>(null);
 	const { toast } = useToast();
 
 	// Fetch user data - only enabled when authenticated
-	const { data: user } = useQuery<any>({
+	const { data: user } = useQuery<unknown>({
 		queryKey: ["/api/user"],
 		enabled: status === "authenticated",
 		queryFn: async () => {
@@ -63,7 +63,7 @@ export default function Home() {
 	});
 
 	// Fetch playlists - only enabled when authenticated
-	const { data: playlists = [] } = useQuery<any[]>({
+	const { data: playlists = [] } = useQuery<unknown[]>({
 		queryKey: ["/api/playlists"],
 		enabled: status === "authenticated",
 		queryFn: async () => {
@@ -75,7 +75,7 @@ export default function Home() {
 
 	// PWA install prompt handling
 	useEffect(() => {
-		const handleBeforeInstallPrompt = (e: any) => {
+		const handleBeforeInstallPrompt = (e: unknown) => {
 			e.preventDefault();
 			setDeferredPrompt(e);
 			setShowInstallBanner(true);
@@ -90,8 +90,8 @@ export default function Home() {
 
 	const handleInstallPWA = async () => {
 		if (deferredPrompt) {
-			deferredPrompt.prompt();
-			const { outcome } = await deferredPrompt.userChoice;
+			deferredPrompt?.prompt();
+			const { outcome } = await deferredPrompt?.userChoice;
 			if (outcome === "accepted") {
 				toast({
 					title: "App installed!",
@@ -193,14 +193,14 @@ export default function Home() {
 
 					<main className="h-auto bg-accent overflow-y-scroll">
 						{/* Header */}
-						<header className="fixed w-full items-center flex flex-row z-10  py-8  bg-background" style={{ padding: "10px" }}>
-							<div className="flex items-start justify-between w-[80vw]">
+						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-background backdrop-blur-lg" style={{ padding: "0px" }}>
+							<div className="flex items-center px-4 justify-between w-[80vw]">
 								<div>
-									<h2 className="text-xl px-2 lg:text-2xl font-bold mb-2">Create AI Playlist</h2>
-									<p className="text-muted-foreground">Select playlists and let AI create the perfect mix</p>
+									<h2 className=" text-[#fff]/90 text-lg lg:text-xl font-bold ">Create AI Playlist</h2>
+									<p className="text-[#fff]/50">Select playlists and let AI create the perfect mix</p>
 								</div>
 								<div className="flex items-center gap-3">
-								<Button variant="default" className="hidden lg:flex items-center gap-2" onClick={() => handleGeneratePlaylist()} disabled={selectedPlaylists.length === 0} data-testid="button-generate-playlist">
+									<Button variant="default" className="hidden lg:flex items-center gap-2" onClick={() => handleGeneratePlaylist()} disabled={selectedPlaylists.length === 0} data-testid="button-generate-playlist">
 										<Sparkles className="w-4 h-4" />
 										Generate Playlist
 									</Button>
@@ -211,7 +211,7 @@ export default function Home() {
 							</div>
 						</header>
 
-						<div className="flex flex-col  h-screen overflow-y-scroll w-full px-8 relative " style={{ paddingTop: "20px" }}>
+						<div className="flex flex-col  mt-28 h-screen overflow-y-scroll w-full px-8 relative " style={{ paddingTop: "20px" }}>
 							{generatedPlaylist && <GeneratedPlaylist playlist={generatedPlaylist} />}
 							{!generatedPlaylist && (
 								<div className="flex w-full flex-row justify-around gap-10">
