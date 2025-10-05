@@ -1,23 +1,24 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Warnings from "./components/warnings";
-import { assistantId } from "./assistant-config";
+import { Providers } from "./providers";
+import type { Metadata } from "next";
+
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Assistants API Quickstart",
-  description: "A quickstart template using the Assistants API with OpenAI",
-  icons: {
-    icon: "/openai.svg",
-  },
+export const metadata: Metadata = {
+  title: "PlaylistGenius - AI-Powered Playlist Generator",
+  description: "Create perfect playlists from your Spotify library using AI",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {assistantId ? children : <Warnings />}
-        <img className="logo" src="/openai.svg" alt="OpenAI Logo" />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
