@@ -38,9 +38,13 @@ export async function analyzePlaylistsAndGenerate(
 		})),
 	}));
 
-const prompt = `You are a playlist generator.
+	const prompt = `You are a playlist generator.
 
 YOU ALREADY HAVE FULL ACCESS to the selected playlist and track data required. NEVER ask for access, permission, or for the user to paste artists/tracks. NEVER say you need to scan anything. Use ONLY the data below, and generate a reply using it.
+
+IMPORTANT: ALL recommended songs in your response MUST be unique and MUST NOT appear in any of the user's selected playlists (see playlist/tracks data below). If you recommend a song already in the selected playlist, it is considered a critical failure.
+- Recommend new songs based on style/genre/artists/adjacent discovery, not repeats.
+- Absolutely NO duplicates with the original, no matter what.
 
 Respond ONLY with valid strict JSON as described below. Do not include ANY markdown, prose, code blocks, explanations, comments, or extra text. Start with { and end with }. Each array and key MUST be present.
 
@@ -62,7 +66,7 @@ Format:
   "playlist_description": string
 }
 
-REPEAT: Do NOT say you need access, data, or to scan anything. The data below is everything provided. Do NOT output markdown, extra prose, comments, or titles. Reply with valid JSON only.
+REPEAT: Do NOT say you need access, data, or to scan anything. Do NOT output markdown, extra prose, comments, or titles. Reply with valid JSON only. Never include songs already present in the playlist/tracks list below.
 
 ---
 PLAYLIST/SONG DATA (use this only, no other source):
@@ -97,7 +101,7 @@ ${userPrompt}
 			max_completion_tokens: 4096,
 		});
 
-		let rawContent = response.choices[0].message.content || "{}";
+		const rawContent = response.choices[0].message.content || "{}";
 		try {
 			// Try parsing full response
 			return JSON.parse(rawContent) as PlaylistAnalysis;
@@ -107,7 +111,7 @@ ${userPrompt}
 			if (match) {
 				try {
 					return JSON.parse(match[0]) as PlaylistAnalysis;
-				} catch (err2) {
+				} catch (_err2) {
 					throw new Error(`OpenAI returned an invalid JSON block in response: ${rawContent}`);
 				}
 			} else {
