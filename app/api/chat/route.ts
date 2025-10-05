@@ -114,3 +114,27 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function DELETE() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    await prisma.chatMessage.deleteMany({ where: { userId: session.user.id } });
+    return Response.json({ ok: true });
+  } catch (error) {
+    console.error("Error resetting chat:", error);
+    return new Response(
+      JSON.stringify({ error: "Failed to reset chat" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}

@@ -8,19 +8,22 @@ datasource db {
 }
 
 model User {
-  id                   String              @id @default(uuid())
-  spotifyId            String              @unique @map("spotify_id")
-  email                String
-  displayName          String              @map("display_name")
-  spotifyAccessToken   String?             @map("spotify_access_token")
-  spotifyRefreshToken  String?             @map("spotify_refresh_token")
-  tokenExpiresAt       DateTime?           @map("token_expires_at")
-  createdAt            DateTime            @default(now()) @map("created_at")
-  playlists            Playlist[]
-  generatedPlaylists   GeneratedPlaylist[]
-  chatMessages         ChatMessage[]
-  accounts             Account[]
-  sessions             Session[]
+  id                  String              @id @default(uuid())
+  name                String?
+  image               String?
+  email               String              @unique
+  emailVerified       DateTime?           @map("email_verified")
+  spotifyId           String?             @unique @map("spotify_id")
+  displayName         String              @default("") @map("display_name")
+  spotifyAccessToken  String?             @map("spotify_access_token")
+  spotifyRefreshToken String?             @map("spotify_refresh_token")
+  tokenExpiresAt      DateTime?           @map("token_expires_at")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  playlists           Playlist[]
+  generatedPlaylists  GeneratedPlaylist[]
+  chatMessages        ChatMessage[]
+  accounts            Account[]
+  sessions            Session[]
 
   @@map("users")
 }

@@ -79,7 +79,16 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return Response.json(playlists);
+    // Normalize shape to what the frontend expects (Spotify-like)
+    const normalized = playlists.map((p) => ({
+      id: p.spotifyId,
+      name: p.name,
+      description: p.description ?? null,
+      images: p.imageUrl ? [{ url: p.imageUrl }] : [],
+      tracks: { total: Number.parseInt(p.trackCount ?? "0", 10) || 0 },
+    }));
+
+    return Response.json(normalized);
   } catch (error) {
     console.error("Error fetching playlists:", error);
     return new Response(

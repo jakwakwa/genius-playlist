@@ -36,3 +36,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 openai-v4.29.0-beta.1.tgz
+
+dist
+server/public
+vite.config.ts.*
+*.tar.gz

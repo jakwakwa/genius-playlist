@@ -1,19 +1,18 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useSession, signIn } from "next-auth/react";
 import { Music, Sparkles } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-
+import AppSidebar from "@/components/app-sidebar";
+import ChatInterface from "@/components/chat-interface";
+import GeneratedPlaylist from "@/components/generated-playlist";
 // Import your existing components
-// You'll need to ensure these are also marked as "use client" if they use hooks
-// import MobileNav from "@/components/mobile-nav";
-// import PlaylistSelector from "@/components/playlist-selector";
-// import Sidebar from "@/components/ui/sidebar";
-// import ChatInterface from "@/components/chat-interface";
-// import GeneratedPlaylist from "@/components/generated-playlist";
+import MobileNav from "@/components/mobile-nav";
+import PlaylistSelector from "@/components/playlist-selector";
+import { Button } from "@/components/ui/button";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { useToast } from "@/hooks/use-toast";
 
 interface PWAInstallBannerProps {
     onInstall: () => void;
@@ -171,7 +170,7 @@ export default function Home() {
     // Handle unauthenticated state
     if (status === "loading") {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <Music className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
                     <h1 className="text-2xl font-bold mb-2">Loading...</h1>
@@ -183,7 +182,7 @@ export default function Home() {
 
     if (status === "unauthenticated") {
         return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
+            <div className="min-h-screen flex items-center  justify-center">
                 <div className="text-center max-w-md px-4">
                     <Music className="w-16 h-16 text-primary mx-auto mb-6" />
                     <h1 className="text-3xl font-bold mb-3">Welcome to PlaylistGenius</h1>
@@ -204,76 +203,92 @@ export default function Home() {
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            {showInstallBanner && (
-                <PWAInstallBanner
-                    onInstall={handleInstallPWA}
-                    onDismiss={handleDismissInstall}
-                />
-            )}
+        <SidebarProvider>
+            <div className="h-screen bg-sidebar not-first:text-slate-300 overflow-hidden">
+                {showInstallBanner && (
+                    <PWAInstallBanner
+                        onInstall={handleInstallPWA}
+                        onDismiss={handleDismissInstall}
+                    />
+                )}
 
-            <div className="flex h-screen overflow-hidden">
-                <Sidebar user={user} />
+                <div className="flex">
+                    <AppSidebar user={user} />
 
-                <main className="flex-1 flex flex-col overflow-hidden">
-                    {/* Header */}
-                    <header className="bg-gradient-to-b from-secondary to-transparent p-6 lg:p-8">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h2 className="text-3xl lg:text-4xl font-bold mb-2">Create AI Playlist</h2>
-                                <p className="text-muted-foreground">Select playlists and let AI create the perfect mix</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Button
-                                    className="hidden lg:flex items-center gap-2"
-                                    onClick={() => handleGeneratePlaylist()}
-                                    disabled={selectedPlaylists.length === 0}
-                                    data-testid="button-generate-playlist"
-                                >
-                                    <Sparkles className="w-4 h-4" />
-                                    Generate Playlist
-                                </Button>
-                                <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
-                                    <span className="text-sm font-bold">
-                                        {user.displayName.charAt(0)}
-                                    </span>
+                    <main className="h-auto bg-accent overflow-y-scroll" >
+                        {/* Header */}
+                        <header className="fixed w-full items-center flex flex-row z-10  py-8  bg-background" style={{ padding: "10px" }}>
+                            <div className="flex items-start justify-between w-[80vw]" >
+                                <div>
+                                    <h2 className="text-xl px-2 lg:text-2xl font-bold mb-2">Create AI Playlist</h2>
+                                    <p className="text-muted-foreground">Select playlists and let AI create the perfect mix</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Button
+                                        className="hidden lg:flex items-center gap-2"
+                                        onClick={() => handleGeneratePlaylist()}
+                                        disabled={selectedPlaylists.length === 0}
+                                        data-testid="button-generate-playlist"
+                                    >
+                                        <Sparkles className="w-4 h-4" />
+                                        Generate Playlist
+                                    </Button>
+                                    <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
+                                        <span className="text-sm font-bold">
+                                            {(
+                                                user?.displayName?.charAt(0) ??
+                                                session?.user?.name?.charAt(0) ??
+                                                session?.user?.email?.charAt(0) ??
+                                                "?"
+                                            )}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </header>
+                        </header>
 
-                    <div className="flex-1 overflow-y-auto pb-20 lg:pb-0">
-                        <div className="p-6 lg:p-8 space-y-8">
-                            <PlaylistSelector
-                                playlists={playlists}
-                                selectedPlaylists={selectedPlaylists}
-                                onTogglePlaylist={togglePlaylistSelection}
-                            />
-
-                            <ChatInterface
-                                selectedPlaylists={selectedPlaylists}
-                                onGeneratePlaylist={handleGeneratePlaylist}
-                            />
-
+                        <div className="flex flex-col  h-screen overflow-y-scroll w-full px-8 relative " style={{ paddingTop: "20px" }} >
                             {generatedPlaylist && (
                                 <GeneratedPlaylist playlist={generatedPlaylist} />
                             )}
+                            {!generatedPlaylist && (
+                                <div className="flex w-full flex-row justify-around gap-10"  >
+                                    <div className=" overflow-y-scroll w-full max-w-[800px]">
+
+
+                                        <PlaylistSelector
+                                            playlists={playlists}
+                                            selectedPlaylists={selectedPlaylists}
+                                            onTogglePlaylist={togglePlaylistSelection}
+                                        />
+                                    </div>
+
+                                    <ChatInterface
+                                        selectedPlaylists={selectedPlaylists}
+                                        onGeneratePlaylist={handleGeneratePlaylist}
+                                    />
+
+
+                                </div>
+                            )}
+
                         </div>
-                    </div>
-                </main>
+
+                    </main>
+                </div>
+
+                <MobileNav />
+
+                {/* Floating Action Button for mobile */}
+                <Button
+                    className="md:hidden fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl z-40"
+                    onClick={() => handleGeneratePlaylist()}
+                    disabled={selectedPlaylists.length === 0}
+                    data-testid="button-generate-mobile"
+                >
+                    <Sparkles className="w-6 h-6" />
+                </Button>
             </div>
-
-            <MobileNav />
-
-            {/* Floating Action Button for mobile */}
-            <Button
-                className="lg:hidden fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl z-40"
-                onClick={() => handleGeneratePlaylist()}
-                disabled={selectedPlaylists.length === 0}
-                data-testid="button-generate-mobile"
-            >
-                <Sparkles className="w-6 h-6" />
-            </Button>
-        </div>
+        </SidebarProvider>
     );
 }

@@ -8,6 +8,7 @@ const nextConfig = {
       "image-cdn-fa.spotifycdn.com",
     ],
   },
+  allowedDevOrigins: ["127.0.0.1"],
 };
 
 export default nextConfig;

@@ -1,26 +1,103 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es2015",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
-    "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*",
+        "./components/*",
+        "./lib/*",
+        "./hooks/*",
+        "./app/*",
+        "./store/*",
+        "./config/*",
+        "./prisma/*",
+        "./scripts/*",
+        "./tests/*",
+        "./styles/*"
+      ],
+      "components/ui/*": [
+        "./components/ui/*",
+        "./components/new/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "*.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "**/*.css",
+  ],
+  "exclude": [
+    ".mdc",
+    ".md",
+    ".css",
+    ".scss",
+    ".sass",
+    ".less",
+    ".styl",
+    ".stylus",
+    ".pcss",
+    ".postcss",
+    ".configig",
+    ".cursor",
+    ".cursorrules",
+    ".cursorignore",
+    ".cursorignorerules",
+    ".cursorignorecursorrules",
+    ".cursorignorecursorrules",
+    "/docs",
+    "/public",
+    "/styles",
+    "/styles/globals.css",
+    "/styles/globals.css.map",
+    "/styles/globals.css.map",
+    "**/*.disabled",
+    ".yml",
+    ".yaml",
+    ".json",
+    ".jsonc",
+    ".jsonrc",
+    ".json5",
+    ".mjs",
+    ".mts",
+    ".cts",
+    ".mtsx",
+    ".ctsx",
+    ".mjs",
+    ".mts",
+    "node_modules",
+    ".next",
+    "tests",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "vitest.config.ts"
+  ]
 }
