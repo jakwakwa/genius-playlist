@@ -63,8 +63,8 @@ export default function PlaylistSelector({ playlists, selectedPlaylists, onToggl
 										)}
 									</div>
 									{isSelected && (
-										<div className="absolute bg-teal-300  top-3 right-3 w-6 h-6 rounded-full flex  items-center justify-center outline-amber-200 outline-2">
-											<Check className="w-4 h-4 text-primary-foreground" />
+										<div className="absolute bg-indigo-600  top-3 right-3 w-6 h-6 rounded-full flex  items-center justify-center outline-blue-400 outline-2">
+											<Check className="w-4 h-4 text-green-300" />
 										</div>
 									)}
 								</div>

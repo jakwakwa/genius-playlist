@@ -4,11 +4,11 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-	"bg-primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-20 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
+	"bg-primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:bg-[#565859] disabled:text-[#FFFFFF72] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
 	{
 		variants: {
 			variant: {
-				default: "bg-card text-muted shadow  md:min-w-[100px] h-fit text-sm p-3 leading-1  shadow-[0_2px_4px_1px]  shadow-slate-950/50 ",
+				default: "bg-card text-[#CEC9EE] shadow  md:min-w-[100px] h-fit text-sm p-3 leading-1  shadow-[0_2px_4px_1px]  shadow-slate-950/50 ",
 				destructive: "bg-[#2909129B] border-2 border-[#80A8E8] text-[#C67E98] shadow-[0_2px_4px_1px] shadow-slate-900/40 rounded-full px-0 w-10",
 				outline: "border border-[#525F5BBB] bg-[#62818064] p-0 rounded-3xl shadow-sm text-[0.8rem] font-bold text-foreground/70  shadow-[0_2px_4px_1px]  shadow-slate-950/30 ",
 				secondary:

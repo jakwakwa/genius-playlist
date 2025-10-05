@@ -82,7 +82,7 @@ export default function GeneratedPlaylist({ playlist }: GeneratedPlaylistProps) 
 	return (
 		<section>
 			<div
-				className="flex w-screen items-center justify-between gap-4 mt-28 mb-12
+				className="flex min-w-full h-fit overflow-y-scroll items-center justify-between gap-4 mt-28 mb-12
             ">
 				<h3 className="text-xl font-bold">Generated Playlist Preview</h3>
 				<Button variant="default" onClick={() => saveToSpotifyMutation.mutate()} disabled={saveToSpotifyMutation.isPending} className="flex items-center gap-2" data-testid="button-save-spotify">
@@ -93,7 +93,7 @@ export default function GeneratedPlaylist({ playlist }: GeneratedPlaylistProps) 
 
 			<Card className="border border-border overflow-hidden">
 				{/* Playlist Header */}
-				<div className="relative h-47 bg-gradient-to-b from-card to-primary overflow-hidden">
+				<div className="relative h-47 bg-gradient-to-t from-slate-800 to-[#01576a] overflow-hidden">
 					<div className="absolute inset-0 gradient-overlay"></div>
 					<div className="absolute bottom-0 left-0 right-0 p-6">
 						<p className="text-xs text-muted-foreground mb-2">AI GENERATED PLAYLIST</p>
@@ -108,8 +108,8 @@ export default function GeneratedPlaylist({ playlist }: GeneratedPlaylistProps) 
 						</div>
 						{playlist.analysis && (
 							<div className="flex gap-4 mt-3">
-								<Badge variant="secondary">{playlist.analysis.mood}</Badge>
-								<Badge variant="secondary">Energy: {playlist.analysis.energy_level}/10</Badge>
+								<Badge variant="destructive">{playlist.analysis.mood}</Badge>
+								<Badge variant="destructive">Energy: {playlist.analysis.energy_level}/10</Badge>
 								{(playlist.analysis.genres ?? []).slice(0, 2).map((genre: string) => (
 									<Badge key={genre} variant="outline">
 										{genre}
@@ -121,8 +121,8 @@ export default function GeneratedPlaylist({ playlist }: GeneratedPlaylistProps) 
 				</div>
 
 				{/* Track List */}
-				<div className="p-6 bg-primary">
-					<div className="flex items-center gap-6 mb-4 pb-3 border-b border-border text-xs text-secondary-foreground uppercase tracking-wider">
+				<div className="p-6 bg-slate-900">
+					<div className="flex items-center gap-6 mb-4 pb-3 border-b border-border text-xs text-[#5e787c] uppercase tracking-wider">
 						<div className="w-8 text-center">#</div>
 						<div className="flex-1">Title</div>
 						<div className="hidden md:block w-48">Album</div>

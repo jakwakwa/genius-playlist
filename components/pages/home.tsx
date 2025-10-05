@@ -11,6 +11,7 @@ import GeneratedPlaylist from "@/components/generated-playlist";
 import MobileNav from "@/components/mobile-nav";
 import PlaylistSelector from "@/components/playlist-selector";
 import { Button } from "@/components/ui/button";
+import { PlaylistGenerationLoading } from "@/components/ui/loading-screen";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
 import type { SpotifyTrack } from "@/types/spotify";
@@ -59,6 +60,7 @@ export default function Home() {
 			genres: string[];
 		};
 	} | null>(null);
+	const [isGeneratingPlaylist, setIsGeneratingPlaylist] = useState(false);
 	const [showInstallBanner, setShowInstallBanner] = useState(false);
 	const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null);
 	const { toast } = useToast();
@@ -141,6 +143,7 @@ export default function Home() {
 			return;
 		}
 
+		setIsGeneratingPlaylist(true);
 		try {
 			const response = await fetch("/api/generate-playlist", {
 				method: "POST",
@@ -170,6 +173,8 @@ export default function Home() {
 				description: "Failed to generate playlist. Please try again.",
 				variant: "destructive",
 			});
+		} finally {
+			setIsGeneratingPlaylist(false);
 		}
 	};
 
@@ -210,18 +215,18 @@ export default function Home() {
 				<div className="flex">
 					<AppSidebar user={user} />
 
-					<main className="h-auto bg-accent overflow-y-scroll">
+					<main className="h-auto bg-[#121725]  overflow-y-scroll">
 						{/* Header */}
-						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-background backdrop-blur-lg" style={{ padding: "0px" }}>
+						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-header backdrop-blur-sm" style={{ padding: "0px" }}>
 							<div className="flex items-center px-4 justify-between w-[80vw]">
 								<div>
 									<h2 className=" text-[#fff]/90 text-lg lg:text-xl font-bold ">Create AI Playlist</h2>
 									<p className="text-[#fff]/50">Select playlists and let AI create the perfect mix</p>
 								</div>
 								<div className="flex items-center gap-3">
-									<Button variant="default" className="hidden lg:flex items-center gap-2" onClick={() => handleGeneratePlaylist()} disabled={selectedPlaylists.length === 0} data-testid="button-generate-playlist">
+									<Button variant="default" className="hidden lg:flex items-center gap-2" onClick={() => handleGeneratePlaylist()} disabled={selectedPlaylists.length === 0 || isGeneratingPlaylist} data-testid="button-generate-playlist">
 										<Sparkles className="w-4 h-4" />
-										Generate Playlist
+										{isGeneratingPlaylist ? "Generating..." : "Generate Playlist"}
 									</Button>
 									<div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
 										<span className="text-sm font-bold">{user?.displayName?.charAt(0) ?? session?.user?.name?.charAt(0) ?? session?.user?.email?.charAt(0) ?? "?"}</span>
@@ -229,10 +234,16 @@ export default function Home() {
 								</div>
 							</div>
 						</header>
+						{!isGeneratingPlaylist && generatedPlaylist &&
+							<div className="flex flex-col overflow-y-scroll h-full pt-18 max-w-full w-screen px-8" >
 
-						<div className="flex flex-col  mt-28 h-screen overflow-y-scroll w-full px-8 relative " style={{ paddingTop: "20px" }}>
-							{generatedPlaylist && <GeneratedPlaylist playlist={generatedPlaylist} />}
-							{!generatedPlaylist && (
+								<GeneratedPlaylist playlist={generatedPlaylist} />
+							</div>
+						}
+						<div className="flex flex-col h-screen   overflow-hidden pt-28 max-w-full w-screen px-8" >
+
+							{isGeneratingPlaylist && <PlaylistGenerationLoading />}
+							{!(isGeneratingPlaylist || generatedPlaylist) && (
 								<div className="flex w-full flex-row justify-around gap-10">
 									<div className=" overflow-y-scroll w-full max-w-[800px]">
 										<PlaylistSelector playlists={playlists} selectedPlaylists={selectedPlaylists} onTogglePlaylist={togglePlaylistSelection} />
@@ -248,14 +259,16 @@ export default function Home() {
 				<MobileNav />
 
 				{/* Floating Action Button for mobile */}
-				<Button
-					variant="default"
-					className="md:hidden fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl z-40"
-					onClick={() => handleGeneratePlaylist()}
-					disabled={selectedPlaylists.length === 0}
-					data-testid="button-generate-mobile">
-					<Sparkles className="w-6 h-6" />
-				</Button>
+				{!isGeneratingPlaylist && (
+					<Button
+						variant="default"
+						className="md:hidden fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-2xl z-40"
+						onClick={() => handleGeneratePlaylist()}
+						disabled={selectedPlaylists.length === 0}
+						data-testid="button-generate-mobile">
+						<Sparkles className="w-6 h-6" />
+					</Button>
+				)}
 			</div>
 		</SidebarProvider>
 	);
