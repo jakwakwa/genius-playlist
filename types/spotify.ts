@@ -75,3 +75,19 @@ export interface SpotifyPlaylist {
 	};
 	uri: string;
 }
+
+// Spotify API Response Types
+export interface SpotifyPlaylistTracksResponse {
+	items: Array<{
+		track: SpotifyTrack | null;
+		added_at: string;
+	}>;
+}
+
+export interface SpotifyAudioFeaturesResponse {
+	audio_features: Array<SpotifyAudioFeatures | null>;
+}
+
+export interface SpotifyPlaylistsResponse {
+	items: SpotifyPlaylist[];
+}
