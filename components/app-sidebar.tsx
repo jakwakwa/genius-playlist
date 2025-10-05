@@ -1,20 +1,10 @@
 "use client";
 
 import { Home, LogOut, Music, Sparkles, User } from "lucide-react";
+import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 interface AppSidebarProps {
     user?: {
@@ -42,21 +32,10 @@ export default function AppSidebar({ user }: AppSidebarProps) {
                             <SidebarMenuItem>
                                 <SidebarMenuButton isActive>
                                     <Home />
-                                    <span>Home</span>
+                                    <Link href="/">Home</Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton>
-                                    <Sparkles />
-                                    <span>Generate</span>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton>
-                                    <Music />
-                                    <span>My Playlists</span>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
+
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -70,20 +49,11 @@ export default function AppSidebar({ user }: AppSidebarProps) {
                                 <User className="w-5 h-5" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium truncate">
-                                    {user.displayName || "User"}
-                                </p>
-                                <p className="text-xs text-muted-foreground truncate">
-                                    {user.email || ""}
-                                </p>
+                                <p className="text-sm font-medium truncate">{user.displayName || "User"}</p>
+                                <p className="text-xs text-muted-foreground truncate">{user.email || ""}</p>
                             </div>
                         </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full"
-                            onClick={() => signOut()}
-                        >
+                        <Button variant="outline" size="sm" className="w-full" onClick={() => signOut()}>
                             <LogOut className="w-4 h-4 mr-2" />
                             Sign Out
                         </Button>

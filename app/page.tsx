@@ -3,10 +3,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function Page() {
-  return (
-    <TooltipProvider>
-      <Home />
-      <Toaster />
-    </TooltipProvider>
-  );
+	return (
+		<TooltipProvider>
+			<Home />
+			<Toaster />
+		</TooltipProvider>
+	);
 }

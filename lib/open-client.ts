@@ -72,7 +72,7 @@ Respond with JSON in this exact format:
 Recommend 20-30 tracks total, selecting the best matches from the source playlists.`;
 
 	try {
-		const response = await openai.chat.completions.create({
+		const response = await openai().chat.completions.create({
 			model: "gpt-5",
 			messages: [
 				{
@@ -115,7 +115,7 @@ Be conversational, helpful, and music-focused. If they have selected playlists, 
 
 ${context?.selectedPlaylists ? `Selected playlists: ${context.selectedPlaylists.join(", ")}` : ""}`;
 
-		const response = await openai.chat.completions.create({
+		const response = await openai().chat.completions.create({
 			model: "gpt-5",
 			messages: [
 				{ role: "system", content: systemPrompt },

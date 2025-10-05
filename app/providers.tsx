@@ -5,24 +5,22 @@ import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 60 * 1000, // 1 minute
-            refetchOnWindowFocus: false,
-            retry: 1,
-          },
-        },
-      })
-  );
+	const [queryClient] = useState(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						staleTime: 60 * 1000, // 1 minute
+						refetchOnWindowFocus: false,
+						retry: 1,
+					},
+				},
+			})
+	);
 
-  return (
-    <SessionProvider>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    </SessionProvider>
-  );
+	return (
+		<SessionProvider>
+			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+		</SessionProvider>
+	);
 }

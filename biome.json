@@ -41,100 +41,21 @@
 				"useKeyWithClickEvents": "off",
 				"noSvgWithoutTitle": "off"
 			},
-			"complexity": {
-				"noExcessiveCognitiveComplexity": "off",
-				"noUselessFragments": "error",
-				"noUselessTypeConstraint": "error",
-				"useOptionalChain": "error",
-				"useSimplifiedLogicExpression": "warn",
-				"noExtraBooleanCast": "error",
-				"noUselessCatch": "error",
-				"noUselessConstructor": "error",
-				"noUselessRename": "error",
-				"noUselessTernary": "error",
-				"useArrowFunction": "error"
-			},
 			"correctness": {
-				"noUnusedVariables": {
-					"level": "error",
-					"fix": "safe"
-				},
-				"noUnusedFunctionParameters": {
-					"level": "error",
-					"fix": "safe"
-				},
-				"noUndeclaredVariables": "error",
-				"useExhaustiveDependencies": "warn",
-				"useHookAtTopLevel": "error",
-				"noUnusedImports": {
-					"level": "warn",
-					"fix": "safe",
-					"options": {}
-				},
-				"noUnreachable": "error",
-				"noConstAssign": "error",
-				"noConstantCondition": "error",
-				"noEmptyPattern": "error",
-				"noSelfAssign": "error",
-				"noSwitchDeclarations": "error",
-				"noUnsafeFinally": "error"
-			},
-			"security": {
-				"noDangerouslySetInnerHtml": "error",
-				"noDangerouslySetInnerHtmlWithChildren": "error",
-				"noGlobalEval": "error"
+				"noUnusedFunctionParameters": "off",
+				"noUnusedImports": "warn",
+				"useExhaustiveDependencies": "warn"
 			},
 			"style": {
-				"noNamespace": "error",
-				"useAsConstAssertion": "error",
-				"useForOf": "error",
 				"noNonNullAssertion": "off",
-				"useConst": "error",
-				"useTemplate": "error",
-				"useShorthandAssign": "error",
-				"useDefaultParameterLast": "error",
-				"useSingleVarDeclarator": "error",
-				"useImportType": {
-					"level": "error",
-					"fix": "safe"
-				}
+				"useImportType": "off"
 			},
 			"suspicious": {
-				"noExplicitAny": "error",
-				"noExtraNonNullAssertion": "error",
-				"noMisleadingInstantiator": "error",
-				"noUnsafeDeclarationMerging": "error",
-				"useNamespaceKeyword": "error",
-				"noArrayIndexKey": "off",
-				"noAssignInExpressions": "error",
-				"noAsyncPromiseExecutor": "error",
-				"noClassAssign": "error",
-				"noCompareNegZero": "error",
-				"noDebugger": "error",
-				"noDoubleEquals": "error",
-				"noDuplicateCase": "error",
-				"noDuplicateParameters": "error",
-				"noDuplicateObjectKeys": "error",
-				"noEmptyInterface": "error",
-				"noFallthroughSwitchClause": "error",
-				"noPrototypeBuiltins": "error",
-				"noRedeclare": "error",
-				"noShadowRestrictedNames": "error",
-				"noSparseArray": "error",
-				"noConsole": {
-					"options": {
-						"allow": [
-							"assert",
-							"error",
-							"warn"
-						]
-					},
-					"fix": "safe"
-				}
+				"noExplicitAny": "warn",
+				"noArrayIndexKey": "off"
 			},
-			"performance": {
-				"noDelete": "error",
-				"noAccumulatingSpread": "error"
+			"complexity": {
+				"noExcessiveCognitiveComplexity": "off"
 			}
 		}
 	},

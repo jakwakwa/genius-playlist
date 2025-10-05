@@ -11,7 +11,8 @@ const buttonVariants = cva(
 				default: "bg-card text-muted shadow  md:min-w-[100px] h-fit text-sm p-3 leading-1  shadow-[0_2px_4px_1px]  shadow-slate-950/50 ",
 				destructive: "bg-[#2909129B] border-2 border-[#80A8E8] text-[#C67E98] shadow-[0_2px_4px_1px] shadow-slate-900/40 rounded-full px-0 w-10",
 				outline: "border border-[#525F5BBB] bg-[#62818064] p-0 rounded-3xl shadow-sm text-[0.8rem] font-bold text-foreground/70  shadow-[0_2px_4px_1px]  shadow-slate-950/30 ",
-				secondary: "btn-secondary disabled:bg-[#7E7E85] rounded-lg border-1 border-[#3F5150] text-foreground shadow-[0px_4px_rgba(26, 40, 46, 0.9)] w-full md:max-w-fit px-4  text-[1rem] shadow-lg shadow-black",
+				secondary:
+					"btn-secondary disabled:bg-[#7E7E85] rounded-lg border-1 border-[#3F5150] text-foreground shadow-[0px_4px_rgba(26, 40, 46, 0.9)] w-full md:max-w-fit px-4  text-[1rem] shadow-lg shadow-black",
 				ghost: "bg-accent",
 				link: "text-primary-forefround underline-offset-4 hover:underline",
 				play: "p-0 m-0",
@@ -49,7 +50,7 @@ function Button({
 	icon,
 	...props
 }: React.ComponentProps<"button"> & {
-	variant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "play" | "icon";
+	variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "play" | "icon";
 	size?: "default" | "sm" | "xs" | "md" | "lg" | "playLarge" | "playSmall" | "play" | "icon";
 	asChild?: boolean;
 	icon?: React.ReactNode;

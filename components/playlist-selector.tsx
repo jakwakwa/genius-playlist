@@ -6,103 +6,77 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 interface Playlist {
-    id: string;
-    name: string;
-    description?: string;
-    images?: { url: string }[];
-    tracks?: { total: number };
+	id: string;
+	name: string;
+	description?: string;
+	images?: { url: string }[];
+	tracks?: { total: number };
 }
 
 interface PlaylistSelectorProps {
-    playlists: Playlist[];
-    selectedPlaylists: string[];
-    onTogglePlaylist: (playlistId: string) => void;
+	playlists: Playlist[];
+	selectedPlaylists: string[];
+	onTogglePlaylist: (playlistId: string) => void;
 }
 
-export default function PlaylistSelector({
-    playlists,
-    selectedPlaylists,
-    onTogglePlaylist
-}: PlaylistSelectorProps) {
-    if (!playlists || playlists.length === 0) {
-        return (
-            <section>
-                <h3 className="text-xl font-bold">Your Playlists</h3>
-                <Card>
-                    <Music className="text-muted-foreground mx-auto" />
-                    <p className="text-muted-foreground">
-                        No playlists found. Create some playlists in Spotify to get started!
-                    </p>
-                </Card>
-            </section>
-        );
-    }
+export default function PlaylistSelector({ playlists, selectedPlaylists, onTogglePlaylist }: PlaylistSelectorProps) {
+	if (!playlists || playlists.length === 0) {
+		return (
+			<section>
+				<h3 className="text-xl font-bold">Your Playlists</h3>
+				<Card>
+					<Music className="text-muted-foreground mx-auto" />
+					<p className="text-muted-foreground">No playlists found. Create some playlists in Spotify to get started!</p>
+				</Card>
+			</section>
+		);
+	}
 
-    return (
-        <section className="w-full h-screen my-12">
-            <div className="h-10 ">
-                <h3 className="text-xl font-bold">
-                    Select Playlists ({selectedPlaylists.length} selected)
-                </h3>
-                {selectedPlaylists.length > 0 && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => selectedPlaylists.forEach(id => onTogglePlaylist(id))}
-                    >
-                        Clear All
-                    </Button>
-                )}
-            </div>
-            <div className="flex flex-wrap gap-2.5  mt-8 overflow-hidden">
-                {playlists.map((playlist) => {
-                    const isSelected = selectedPlaylists.includes(playlist.id);
-                    return (
-                        <Card
-                            key={playlist.id}
-                            className={`cursor-pointer h-[190px]  max-w-[140px] transition-all hover:scale-105 px-1 m-2 ${isSelected ? "   my-1" : ""
-                                }`}
-                            onClick={() => onTogglePlaylist(playlist.id)}
-                            data-testid={`card - playlist - ${playlist.id}`}
-                        >
-                            <div className=" flex flex-col gap-1 ">
-                                <div className="">
-                                    <div className="aspect-square flex items-center  justify-center ring-2 ring-slate-500 rounded-lg overflow-hidden  ">
-                                        {playlist?.images?.[0]?.url ? (
-                                            <Image
-                                                width={120}
-                                                height={120}
-                                                src={playlist.images[0].url}
-                                                alt={`${playlist.name}`}
-                                                className="w-full h-full object-cover"
-
-                                            />
-                                        ) : (
-                                            <div className="  aspect-square bg-slate-950 flex items-center justify-center  p-4">
-                                                <Music className="w-4 h-4 text-muted-foreground" />
-                                            </div>
-                                        )}
-                                    </div>
-                                    {isSelected && (
-                                        <div className="absolute bg-teal-300  top-3 right-3 w-6 h-6 rounded-full flex  items-center justify-center outline-amber-200 outline-2" >
-                                            <Check className="w-4 h-4 text-primary-foreground" />
-                                        </div>
-                                    )}
-                                </div>
-                                <p
-                                    className="font-bold leading-relaxed text-sm truncate"
-                                    data-testid={`text - playlist - name - ${playlist.id}`}
-                                >
-                                    {playlist.name}
-                                </p>
-                                <p className="text-xs truncate px-3 text-muted-foreground">
-                                    {playlist.tracks?.total || 0} tracks
-                                </p>
-                            </div>
-                        </Card>
-                    );
-                })}
-            </div>
-        </section>
-    );
+	return (
+		<section className="w-full h-screen my-12">
+			<div className="h-10 ">
+				<h3 className="text-xl font-bold">Select Playlists ({selectedPlaylists.length} selected)</h3>
+				{selectedPlaylists.length > 0 && (
+					<Button variant="ghost" size="sm" onClick={() => selectedPlaylists.forEach(id => onTogglePlaylist(id))}>
+						Clear All
+					</Button>
+				)}
+			</div>
+			<div className="flex flex-wrap gap-2.5  mt-8 overflow-hidden">
+				{playlists.map(playlist => {
+					const isSelected = selectedPlaylists.includes(playlist.id);
+					return (
+						<Card
+							key={playlist.id}
+							className={`cursor-pointer h-[190px]  max-w-[140px] transition-all hover:scale-105 px-1 m-2 ${isSelected ? "   my-1" : ""}`}
+							onClick={() => onTogglePlaylist(playlist.id)}
+							data-testid={`card - playlist - ${playlist.id}`}>
+							<div className=" flex flex-col gap-1 ">
+								<div className="">
+									<div className="aspect-square flex items-center  justify-center ring-2 ring-slate-500 rounded-lg overflow-hidden  ">
+										{playlist?.images?.[0]?.url ? (
+											<Image width={120} height={120} src={playlist.images[0].url} alt={`${playlist.name}`} className="w-full h-full object-cover" />
+										) : (
+											<div className="  aspect-square bg-slate-950 flex items-center justify-center  p-4">
+												<Music className="w-4 h-4 text-muted-foreground" />
+											</div>
+										)}
+									</div>
+									{isSelected && (
+										<div className="absolute bg-teal-300  top-3 right-3 w-6 h-6 rounded-full flex  items-center justify-center outline-amber-200 outline-2">
+											<Check className="w-4 h-4 text-primary-foreground" />
+										</div>
+									)}
+								</div>
+								<p className="font-bold leading-relaxed text-sm truncate" data-testid={`text - playlist - name - ${playlist.id}`}>
+									{playlist.name}
+								</p>
+								<p className="text-xs truncate px-3 text-muted-foreground">{playlist.tracks?.total || 0} tracks</p>
+							</div>
+						</Card>
+					);
+				})}
+			</div>
+		</section>
+	);
 }
