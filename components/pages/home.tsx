@@ -13,6 +13,7 @@ import PlaylistSelector from "@/components/playlist-selector";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useToast } from "@/hooks/use-toast";
+import type { SpotifyTrack } from "@/types/spotify";
 
 interface PWAInstallBannerProps {
 	onInstall: () => void;
@@ -46,13 +47,24 @@ function PWAInstallBanner({ onInstall, onDismiss }: PWAInstallBannerProps) {
 export default function Home() {
 	const { data: session, status } = useSession();
 	const [selectedPlaylists, setSelectedPlaylists] = useState<string[]>([]);
-	const [generatedPlaylist, setGeneratedPlaylist] = useState<unknown>(null);
+	const [generatedPlaylist, setGeneratedPlaylist] = useState<{
+		id: string;
+		name: string;
+		description: string;
+		tracks: SpotifyTrack[];
+		analysis?: {
+			theme: string;
+			mood: string;
+			energy_level: number;
+			genres: string[];
+		};
+	} | null>(null);
 	const [showInstallBanner, setShowInstallBanner] = useState(false);
-	const [deferredPrompt, setDeferredPrompt] = useState<unknown>(null);
+	const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null);
 	const { toast } = useToast();
 
 	// Fetch user data - only enabled when authenticated
-	const { data: user } = useQuery<unknown>({
+	const { data: user } = useQuery<{ displayName?: string }>({
 		queryKey: ["/api/user"],
 		enabled: status === "authenticated",
 		queryFn: async () => {
@@ -63,7 +75,12 @@ export default function Home() {
 	});
 
 	// Fetch playlists - only enabled when authenticated
-	const { data: playlists = [] } = useQuery<unknown[]>({
+	const { data: playlists = [] } = useQuery<Array<{
+		id: string;
+		name: string;
+		images?: Array<{ url: string }>;
+		tracks?: { total: number };
+	}>>({
 		queryKey: ["/api/playlists"],
 		enabled: status === "authenticated",
 		queryFn: async () => {
@@ -75,7 +92,7 @@ export default function Home() {
 
 	// PWA install prompt handling
 	useEffect(() => {
-		const handleBeforeInstallPrompt = (e: unknown) => {
+		const handleBeforeInstallPrompt = (e: Event) => {
 			e.preventDefault();
 			setDeferredPrompt(e);
 			setShowInstallBanner(true);
@@ -90,8 +107,10 @@ export default function Home() {
 
 	const handleInstallPWA = async () => {
 		if (deferredPrompt) {
-			deferredPrompt?.prompt();
-			const { outcome } = await deferredPrompt?.userChoice;
+			// Type assertion for BeforeInstallPromptEvent which is not in standard TypeScript types
+			const promptEvent = deferredPrompt as unknown as { prompt: () => void; userChoice: Promise<{ outcome: string }> };
+			promptEvent.prompt();
+			const { outcome } = await promptEvent.userChoice;
 			if (outcome === "accepted") {
 				toast({
 					title: "App installed!",

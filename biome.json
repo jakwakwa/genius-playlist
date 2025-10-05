@@ -51,7 +51,7 @@
 				"useImportType": "off"
 			},
 			"suspicious": {
-				"noExplicitAny": "warn",
+				"noExplicitAny": "error",
 				"noArrayIndexKey": "off"
 			},
 			"complexity": {
