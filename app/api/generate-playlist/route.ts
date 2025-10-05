@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 			});
 		}
 
-		// Fetch tracks from selected playlists
+		// Fetch tracks from selected playlists -- provide full track data for OpenAI
 		const sourcePlaylists = [];
 		for (const playlistId of selectedPlaylistIds) {
 			const playlist = await prisma.playlist.findFirst({
@@ -30,40 +30,28 @@ export async function POST(req: Request) {
 			});
 
 			if (playlist) {
-				const tracksRes = await spotifyFetch(user.id, `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`);
+				// Fetch full track listing from Spotify API
+				const tracksRes = await spotifyFetch(user.id, `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`);
 
 				if (tracksRes.ok) {
 					const tracksData = await tracksRes.json();
-					const trackIds = tracksData.items
-						?.filter((item: any) => item?.track?.type === "track")
-						.map((item: any) => item.track.id)
-						.filter(Boolean)
-						.slice(0, 50);
-
-					let audioFeatures = null;
-					if (trackIds && trackIds.length > 0) {
-						const featuresRes = await spotifyFetch(user.id, `https://api.spotify.com/v1/audio-features?ids=${trackIds.join(",")}`);
-						if (featuresRes.ok) {
-							const featuresData = await featuresRes.json();
-							audioFeatures = featuresData.audio_features;
-						}
-					}
-
-					const tracksWithFeatures = tracksData.items
-						?.map((item: any, index: number) => {
-							if (item?.track && item.track.type === "track") {
-								return {
-									...item.track,
-									audio_features: audioFeatures?.[index] || null,
-								};
-							}
-							return null;
-						})
-						.filter(Boolean);
-
+					// The tracksData.items is an array of { track, added_at }
+					const formattedTracks = tracksData.items.map((item: { track: any }) => {
+						const track = item?.track;
+						if (!track || track.type !== "track") return null;
+						return {
+							artist: Array.isArray(track.artists) ? track.artists.map((a: any) => a.name).join(", ") : track.artists?.name || "",
+							title: track.name,
+							// Additional fields if you want
+							album: track.album?.name,
+							duration_ms: track.duration_ms,
+							uri: track.uri,
+						};
+					}).filter(Boolean);
 					sourcePlaylists.push({
 						name: playlist.name,
-						tracks: tracksWithFeatures,
+						id: playlist.spotifyId,
+						tracks: formattedTracks,
 					});
 				}
 			}
