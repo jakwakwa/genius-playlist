@@ -220,9 +220,9 @@ export default function Home() {
 				<div className="flex h-screen">
 					<AppSidebar user={user} />
 
-					<main className="h-screen bg-[#000]">
+					<main className="h-screen bg-[#161a24]">
 						{/* Header */}
-						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-[#324758bb] backdrop-blur-sm" style={{ padding: "0px" }}>
+						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-[#18222cdf] backdrop-blur-sm" style={{ padding: "0px" }}>
 							<div className="flex items-center px-4 justify-between w-[80vw]">
 								<div>
 									<h2 className=" text-[#fff]/90 text-lg lg:text-xl font-bold ">Create AI Playlist</h2>

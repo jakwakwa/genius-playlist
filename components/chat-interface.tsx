@@ -121,14 +121,14 @@ export default function ChatInterface({ selectedPlaylists, onGeneratePlaylist }:
 
 
 			{/* Chat Messages Area */}
-			<div className="py-2 bg-linear-to-br from-[#333341] to-[#17171C00] border-3 px-8 rounded-2xl  h-[65vh] overflow-y-scroll  w-[95%]" data-testid="chat-messages">
+			<div className="py-2 bg-linear-to-br from-[#21212d] to-[#17171C00] border-3 px-8 rounded-2xl  h-[65vh] overflow-y-scroll  w-[95%]" data-testid="chat-messages">
 				{messages.length === 0 && (
 					<div className="chat-bubble flex gap-3">
-						<div className="w-8 h-8 bg-[#4f47a7] rounded-full flex items-center justify-center font-mono flex-shrink-0">
+						<div className="w-8 h-8 bg-[#4335da] rounded-full flex items-center justify-center font-mono flex-shrink-0">
 							<Bot className="w-4 h-4  font-mono" />
 						</div>
 						<div className="h-auto">
-							<div className="bg-linear-to-b  from-[#634cb5] to-[#481f89]   shadow-stone-950 shadow-lg rounded-2xl rounded-tl-none p-4">
+							<div className="bg-linear-to-b  from-[rgb(63,45,131)] to-[#0d1d2c]   shadow-stone-950 shadow-lg rounded-2xl rounded-tl-none p-4">
 								<p className="text-sm  font-mono">
 									Hi! I can help you create the perfect playlist.
 									{selectedPlaylists.length > 0
@@ -150,7 +150,7 @@ export default function ChatInterface({ selectedPlaylists, onGeneratePlaylist }:
 						)}
 
 						<div className={`flex-1  ${message.role === "user" ? "flex flex-col items-end" : ""}`}>
-							<div className={`rounded-2xl p-4 max-w-lg bg-linear-to-b from-[rgb(7,144,92)]     shadow-slate-900 shadow-lg  rounded-tl-md ${message.role === "user" ? "bg-teal-800 font-bold text-[#6fd4b9] rounded-tr-none" : " text-sm bg-secondary rounded-tl-none from-slate-800 font-mono to-purple-900 "}`}>
+							<div className={`rounded-2xl p-4 max-w-lg bg-linear-to-b from-[rgb(1,66,87)]     shadow-slate-900 shadow-lg  rounded-tl-md ${message.role === "user" ? "bg-[#31746c] font-bold text-[#6cebc9] rounded-tr-none" : " text-sm bg-secondary rounded-tl-none from-[#5c5196] font-mono to-[#472785] "}`}>
 								<p className="text-xs ">{message.content}</p>
 							</div>
 							<p className={`text-xs text-muted-foreground mt-1 ${message.role === "user" ? "mr-2" : "ml-2"}`}>
@@ -159,8 +159,8 @@ export default function ChatInterface({ selectedPlaylists, onGeneratePlaylist }:
 						</div>
 
 						{message.role === "user" && (
-							<div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0 ">
-								<User className="w-4 h-4 text-green-500" />
+							<div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center flex-shrink-0 ">
+								<User className="w-4 h-4 text-green-200" />
 							</div>
 						)}
 					</div>
@@ -168,11 +168,11 @@ export default function ChatInterface({ selectedPlaylists, onGeneratePlaylist }:
 
 				{chatMutation.isPending && (
 					<div className="chat-bubble flex gap-3">
-						<div className="w-8 h-8 bg-[#513be2] rounded-full flex items-center justify-center flex-shrink-0">
+						<div className="w-8 h-8 bg-[#4636ab] rounded-full flex items-center justify-center flex-shrink-0">
 							<Bot className="w-4 h-4 text-slate-200 animate-pulse" />
 						</div>
 						<div className="flex-1">
-							<div className="bg-secondary  bg-linear-to-b  from-[#283645] to-[#3a3455] animate-pulse  shadow-slate-900 shadow-lg rounded-2xl rounded-tl-none p-4">
+							<div className="bg-secondary  bg-linear-to-b  from-[#283645] to-[#342e52] animate-pulse  shadow-slate-900 shadow-lg rounded-2xl rounded-tl-none p-4">
 								<div className="flex gap-1">
 									<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
 									<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>

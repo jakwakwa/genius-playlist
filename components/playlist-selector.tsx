@@ -48,7 +48,7 @@ export default function PlaylistSelector({ playlists, selectedPlaylists, onToggl
 					return (
 						<Card
 							key={playlist.id}
-							className={`cursor-pointer h-[190px]  max-w-[120px] transition-all hover:scale-105 m-2 ${isSelected ? "   my-1" : "m-1"}`}
+							className={`cursor-pointer h-[190px]  max-w-[140px] transition-all hover:scale-105 m-2 ${isSelected ? "   my-1" : "m-1"}`}
 							onClick={() => onTogglePlaylist(playlist.id)}
 							data-testid={`card - playlist - ${playlist.id}`}>
 							<div className=" flex flex-col gap-1 ">
