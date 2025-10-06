@@ -22,19 +22,19 @@ interface PlaylistSelectorProps {
 export default function PlaylistSelector({ playlists, selectedPlaylists, onTogglePlaylist }: PlaylistSelectorProps) {
 	if (!playlists || playlists.length === 0) {
 		return (
-			<section>
-				<h3 className="text-xl font-bold">Your Playlists</h3>
-				<Card>
-					<Music className="text-muted-foreground mx-auto" />
-					<p className="text-muted-foreground">No playlists found. Create some playlists in Spotify to get started!</p>
+			<section className="w-full  h-screen  mt-36 mb-0">
+				<h3 className="text-xl h-fit font-bold">Your Playlists</h3>
+				<Card className="flex flex-col justify-start items-start w-full">
+					<Music className="text-shadow-emerald-200 mt-12 animate-bounce" />
+					<p className="text-muted-foreground text-left py-8 animate-pulse">Loading playlists... </p>
 				</Card>
 			</section>
 		);
 	}
 
 	return (
-		<section className="w-full h-screen my-12">
-			<div className="h-10 ">
+		<section className="w-full  h-screen  mt-36 mb-0">
+			<div className="h-auto">
 				<h3 className="text-xl font-bold">Select Playlists ({selectedPlaylists.length} selected)</h3>
 				{selectedPlaylists.length > 0 && (
 					<Button variant="ghost" size="sm" onClick={() => selectedPlaylists.forEach(id => onTogglePlaylist(id))}>
@@ -42,13 +42,13 @@ export default function PlaylistSelector({ playlists, selectedPlaylists, onToggl
 					</Button>
 				)}
 			</div>
-			<div className="flex flex-wrap gap-2.5  mt-8 overflow-hidden">
+			<div className="flex flex-wrap gap-4 h-full mt-4 ">
 				{playlists.map(playlist => {
 					const isSelected = selectedPlaylists.includes(playlist.id);
 					return (
 						<Card
 							key={playlist.id}
-							className={`cursor-pointer h-[190px]  max-w-[140px] transition-all hover:scale-105 px-1 m-2 ${isSelected ? "   my-1" : ""}`}
+							className={`cursor-pointer h-[190px]  max-w-[120px] transition-all hover:scale-105 m-2 ${isSelected ? "   my-1" : "m-1"}`}
 							onClick={() => onTogglePlaylist(playlist.id)}
 							data-testid={`card - playlist - ${playlist.id}`}>
 							<div className=" flex flex-col gap-1 ">

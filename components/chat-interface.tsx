@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bot, RotateCcw, Send, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 interface ChatMessage {
@@ -109,103 +108,105 @@ export default function ChatInterface({ selectedPlaylists, onGeneratePlaylist }:
 	};
 
 	return (
-		<section className="w-full pt-12">
-			<div className="flex items-center justify-between mb-4">
-				<h3 className="text-xl font-bold">AI Playlist Assistant</h3>
-				<Button variant="ghost" size="sm" onClick={handleReset} disabled={resetPending || chatMutation.isPending} className="gap-2" data-testid="button-reset-chat">
-					<RotateCcw className="w-4 h-4" />
-					{resetPending ? "Resetting..." : "Reset chat"}
-				</Button>
-			</div>
 
-			<Card className="border border-border overflow-hidden  ">
-				{/* Chat Messages Area */}
-				<div className="h-96 overflow-y-auto p-6 space-y-4" data-testid="chat-messages">
-					{messages.length === 0 && (
-						<div className="chat-bubble flex gap-3">
-							<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-								<Bot className="w-4 h-4 text-primary-foreground" />
-							</div>
-							<div className="flex-1">
-								<div className="bg-secondary rounded-2xl rounded-tl-none p-4">
-									<p className="text-sm">
-										Hi! I can help you create the perfect playlist.
-										{selectedPlaylists.length > 0
-											? ` I see you've selected ${selectedPlaylists.length} playlist${selectedPlaylists.length > 1 ? "s" : ""}. What kind of mood or theme are you going for?`
-											: " Start by selecting some playlists above, then tell me what kind of mood you're going for!"}
-									</p>
-								</div>
-								<p className="text-xs text-muted-foreground mt-1 ml-2">AI Assistant • Just now</p>
-							</div>
+		<div className="flex flex-col items-start justify-center h-full max-h-[90vh] overflow-hidden relative gap-4 pt-28 w-full">
+
+
+			<h3 className="text-xl font-bold">AI Playlist Assistant</h3>
+			<Button variant="ghost" size="sm" onClick={handleReset} disabled={resetPending || chatMutation.isPending} className="gap-2" data-testid="button-reset-chat">
+				<RotateCcw className="w-4 h-4" />
+				{resetPending ? "Resetting..." : "Reset chat"}
+			</Button>
+
+
+
+			{/* Chat Messages Area */}
+			<div className="py-2 bg-linear-to-br from-[#333341] to-[#17171C00] border-3 px-8 rounded-2xl  h-[65vh] overflow-y-scroll  w-[95%]" data-testid="chat-messages">
+				{messages.length === 0 && (
+					<div className="chat-bubble flex gap-3">
+						<div className="w-8 h-8 bg-[#4f47a7] rounded-full flex items-center justify-center font-mono flex-shrink-0">
+							<Bot className="w-4 h-4  font-mono" />
 						</div>
-					)}
-
-					{messages.map((message: ChatMessage, _index: number) => (
-						<div key={message.id} className={`chat-bubble flex gap-3 ${message.role === "user" ? "justify-end" : ""}`}>
-							{message.role === "assistant" && (
-								<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-									<Bot className="w-4 h-4 text-primary-foreground" />
-								</div>
-							)}
-
-							<div className={`flex-1 ${message.role === "user" ? "flex flex-col items-end" : ""}`}>
-								<div className={`rounded-2xl p-4 max-w-lg ${message.role === "user" ? "bg-primary text-primary-foreground rounded-tr-none" : "bg-secondary rounded-tl-none"}`}>
-									<p className="text-sm">{message.content}</p>
-								</div>
-								<p className={`text-xs text-muted-foreground mt-1 ${message.role === "user" ? "mr-2" : "ml-2"}`}>
-									{message.role === "user" ? "You" : "AI Assistant"} • {new Date(message.createdAt!).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+						<div className="h-auto">
+							<div className="bg-linear-to-b  from-[#634cb5] to-[#481f89]   shadow-stone-950 shadow-lg rounded-2xl rounded-tl-none p-4">
+								<p className="text-sm  font-mono">
+									Hi! I can help you create the perfect playlist.
+									{selectedPlaylists.length > 0
+										? ` I see you've selected ${selectedPlaylists.length} playlist${selectedPlaylists.length > 1 ? "s" : ""}. What kind of mood or theme are you going for?`
+										: " Start by selecting some playlists above, then tell me what kind of mood you're going for!"}
 								</p>
 							</div>
-
-							{message.role === "user" && (
-								<div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
-									<User className="w-4 h-4" />
-								</div>
-							)}
+							<p className="text-xs text-muted-foreground mt-5 ml-2">AI Assistant • Just now</p>
 						</div>
-					))}
+					</div>
+				)}
 
-					{chatMutation.isPending && (
-						<div className="chat-bubble flex gap-3">
-							<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-								<Bot className="w-4 h-4 text-primary-foreground animate-pulse" />
+				{messages.map((message: ChatMessage, _index: number) => (
+					<div key={message.id} className={`chat-bubble flex gap-3 ${message.role === "user" ? "justify-end" : ""}`}>
+						{message.role === "assistant" && (
+							<div className="w-8 h-8 bg-[#4128bf] rounded-full flex items-center justify-center flex-shrink-0">
+								<Bot className="w-4 h-4 text-[#808df0] " />
 							</div>
-							<div className="flex-1">
-								<div className="bg-secondary rounded-2xl rounded-tl-none p-4">
-									<div className="flex gap-1">
-										<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-										<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-										<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-									</div>
-								</div>
-								<p className="text-xs text-muted-foreground mt-1 ml-2">AI Assistant • Typing...</p>
+						)}
+
+						<div className={`flex-1  ${message.role === "user" ? "flex flex-col items-end" : ""}`}>
+							<div className={`rounded-2xl p-4 max-w-lg bg-linear-to-b from-[rgb(7,144,92)]     shadow-slate-900 shadow-lg  rounded-tl-md ${message.role === "user" ? "bg-teal-800 font-bold text-[#6fd4b9] rounded-tr-none" : " text-sm bg-secondary rounded-tl-none from-slate-800 font-mono to-purple-900 "}`}>
+								<p className="text-xs ">{message.content}</p>
 							</div>
+							<p className={`text-xs text-muted-foreground mt-1 ${message.role === "user" ? "mr-2" : "ml-2"}`}>
+								{message.role === "user" ? "You" : "AI Assistant"} • {new Date(message.createdAt!).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+							</p>
 						</div>
-					)}
 
-					<div ref={messagesEndRef} />
-				</div>
+						{message.role === "user" && (
+							<div className="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center flex-shrink-0 ">
+								<User className="w-4 h-4 text-green-500" />
+							</div>
+						)}
+					</div>
+				))}
 
-				{/* Chat Input */}
-				<div className="border-t border-border p-4">
-					<form onSubmit={handleSubmit} className="flex gap-3">
-						<Input
-							type="text"
-							placeholder="Type your message or request..."
-							value={inputValue}
-							onChange={e => setInputValue(e.target.value)}
-							onKeyPress={handleKeyPress}
-							className="flex-1 bg-secondary border-border rounded-full px-6 py-3"
-							disabled={chatMutation.isPending}
-							data-testid="input-chat-message"
-						/>
-						<Button type="submit" variant="default" size="icon" className="w-12 h-12 rounded-full" disabled={!inputValue.trim() || chatMutation.isPending} data-testid="button-send-message">
-							<Send className="w-4 h-4" />
-						</Button>
-					</form>
-					<p className="text-xs text-muted-foreground mt-2 ml-4">AI-powered by OpenAI • Your data stays private</p>
-				</div>
-			</Card>
-		</section>
+				{chatMutation.isPending && (
+					<div className="chat-bubble flex gap-3">
+						<div className="w-8 h-8 bg-[#513be2] rounded-full flex items-center justify-center flex-shrink-0">
+							<Bot className="w-4 h-4 text-slate-200 animate-pulse" />
+						</div>
+						<div className="flex-1">
+							<div className="bg-secondary  bg-linear-to-b  from-[#283645] to-[#3a3455] animate-pulse  shadow-slate-900 shadow-lg rounded-2xl rounded-tl-none p-4">
+								<div className="flex gap-1">
+									<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+									<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+									<div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+								</div>
+							</div>
+							<p className="text-xs text-muted-foreground mt-1 ml-2">AI Assistant • Thinking...</p>
+						</div>
+					</div>
+				)}
+
+				<div ref={messagesEndRef} />
+			</div>
+
+			{/* Chat Input */}
+			<div className="flex flex-col w-[95%]  items-center border-t border-border h-fit max-h-24 bg-slate-800 rounded-lg py-1">
+				<form onSubmit={handleSubmit} className="flex justify-between items-center gap-2 h-fit  w-full p-2 ">
+					<Input
+						type="text"
+						placeholder="Type your message or request..."
+						value={inputValue}
+						onChange={e => setInputValue(e.target.value)}
+						onKeyPress={handleKeyPress}
+						className="flex justify-start bg-slate-900 w-full outline-ring outline-0 border-1 border-[#216d7c] rounded-lg px-6 h-12"
+						disabled={chatMutation.isPending}
+						data-testid="input-chat-message"
+					/>
+					<Button type="submit" variant="default" size="icon" className="w-12 h-12 rounded-full" disabled={!inputValue.trim() || chatMutation.isPending} data-testid="button-send-message">
+						<Send className="w-4 h-4" />
+					</Button>
+				</form>
+				<p className="text-xs w-full pl-4 pb-4 text-muted-foreground">AI-powered • Your data stays private</p>
+			</div>
+
+		</div>
 	);
 }

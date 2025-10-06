@@ -102,7 +102,7 @@ export default function GeneratedPlaylist({ playlist, onRestart }: GeneratedPlay
 
 			<Card className="border border-border overflow-hidden">
 				{/* Playlist Header */}
-				<div className="relative h-47 bg-gradient-to-t from-slate-800 to-[#01576a] overflow-hidden">
+				<div className="relative h-47 bg-gradient-to-t from-[#13151f] to-[#513ed06a] overflow-hidden">
 					<div className="absolute inset-0 gradient-overlay"></div>
 					<div className="absolute bottom-0 left-0 right-0 p-6">
 						<p className="text-xs text-muted-foreground mb-2">AI GENERATED PLAYLIST</p>
@@ -130,7 +130,7 @@ export default function GeneratedPlaylist({ playlist, onRestart }: GeneratedPlay
 				</div>
 
 				{/* Track List */}
-				<div className="p-6 bg-slate-900">
+				<div className="p-6 bg-[#080a12]">
 					<div className="flex items-center gap-6 mb-4 pb-3 border-b border-border text-xs text-[#5e787c] uppercase tracking-wider">
 						<div className="w-8 text-center">#</div>
 						<div className="flex-1">Title</div>

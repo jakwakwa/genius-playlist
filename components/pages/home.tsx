@@ -214,15 +214,15 @@ export default function Home() {
 
 	return (
 		<SidebarProvider>
-			<div className="h-screen bg-sidebar not-first:text-slate-300 overflow-hidden">
+			<div className="bg-sidebar">
 				{showInstallBanner && <PWAInstallBanner onInstall={handleInstallPWA} onDismiss={handleDismissInstall} />}
 
-				<div className="flex">
+				<div className="flex h-screen">
 					<AppSidebar user={user} />
 
-					<main className="h-auto bg-[#121725]  overflow-y-scroll">
+					<main className="h-screen bg-[#000]">
 						{/* Header */}
-						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-header backdrop-blur-sm" style={{ padding: "0px" }}>
+						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-[#324758bb] backdrop-blur-sm" style={{ padding: "0px" }}>
 							<div className="flex items-center px-4 justify-between w-[80vw]">
 								<div>
 									<h2 className=" text-[#fff]/90 text-lg lg:text-xl font-bold ">Create AI Playlist</h2>
@@ -240,21 +240,22 @@ export default function Home() {
 							</div>
 						</header>
 						{!isGeneratingPlaylist && generatedPlaylist &&
-							<div className="flex flex-col overflow-y-scroll h-full pt-18 max-w-full w-screen px-8" >
+							<div className="flex flex-col h-full in-h-screen pt-18 max-w-full w-screen px-8" >
 
 								<GeneratedPlaylist playlist={generatedPlaylist} onRestart={handleRestart} />
 							</div>
 						}
-						<div className="flex flex-col h-screen   overflow-hidden pt-28 max-w-full w-screen px-8" >
+						<div className="flex flex-row h-screen overflow-hidden  w-[89vw] pr-18"  >
 
 							{isGeneratingPlaylist && <PlaylistGenerationLoading />}
 							{!(isGeneratingPlaylist || generatedPlaylist) && (
-								<div className="flex w-full flex-row justify-around gap-10">
-									<div className=" overflow-y-scroll w-full max-w-[800px]">
+								<div className="flex flex-row justify-center px-8 ">
+									<div className="overflow-y-scroll w-screen max-w-[700px] ">
 										<PlaylistSelector playlists={playlists} selectedPlaylists={selectedPlaylists} onTogglePlaylist={togglePlaylistSelection} />
 									</div>
-
-									<ChatInterface selectedPlaylists={selectedPlaylists} onGeneratePlaylist={handleGeneratePlaylist} />
+									<div className="w-full min-w-[600px] mt-8">
+										<ChatInterface selectedPlaylists={selectedPlaylists} onGeneratePlaylist={handleGeneratePlaylist} />
+									</div>
 								</div>
 							)}
 						</div>
