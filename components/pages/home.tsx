@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Music, Sparkles } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import AppSidebar from "@/components/app-sidebar";
 import ChatInterface from "@/components/chat-interface";
 import GeneratedPlaylist from "@/components/generated-playlist";
 // Import your existing components
@@ -217,13 +216,13 @@ export default function Home() {
 			<div className="bg-sidebar">
 				{showInstallBanner && <PWAInstallBanner onInstall={handleInstallPWA} onDismiss={handleDismissInstall} />}
 
-				<div className="flex h-screen">
-					<AppSidebar user={user} />
+				<div className="flex h-screen w-full">
 
-					<main className="h-screen bg-[#161a24]">
+
+					<main className="h-screen w-screen bg-[#171c2b]">
 						{/* Header */}
-						<header className="fixed w-full justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-[#18222cdf] backdrop-blur-sm" style={{ padding: "0px" }}>
-							<div className="flex items-center px-4 justify-between w-[80vw]">
+						<header className="w-full fixed justify-between content-center items-center flex flex-row z-10 h-24 px-4 bg-[#18222cdf] backdrop-blur-sm" style={{ padding: "0px" }}>
+							<div className="flex items-center px-4 justify-between w-full">
 								<div>
 									<h2 className=" text-[#fff]/90 text-lg lg:text-xl font-bold ">Create AI Playlist</h2>
 									<p className="text-[#fff]/50">Select playlists and let AI create the perfect mix</p>
@@ -245,7 +244,7 @@ export default function Home() {
 								<GeneratedPlaylist playlist={generatedPlaylist} onRestart={handleRestart} />
 							</div>
 						}
-						<div className="flex flex-row h-screen overflow-hidden  w-[89vw] pr-18"  >
+						<div className="flex flex-row h-screen overflow-hidden"  >
 
 							{isGeneratingPlaylist && <PlaylistGenerationLoading />}
 							{!(isGeneratingPlaylist || generatedPlaylist) && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, LogOut, Music, Sparkles, User } from "lucide-react";
+import { Home, LogOut, Music, User } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
